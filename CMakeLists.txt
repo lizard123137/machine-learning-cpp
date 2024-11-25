@@ -3,6 +3,8 @@ project(machine-learning-cpp LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+
 include(FetchContent)
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -12,6 +14,14 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp)
-target_link_libraries(main PRIVATE sfml-graphics)
-target_compile_features(main PRIVATE cxx_std_17)
+add_executable(main 
+    src/main.cpp
+    src/perceptron.hpp
+)
+
+target_link_libraries(main PRIVATE
+    sfml-graphics
+    Eigen3::Eigen
+)
+
+ target_compile_features(main PRIVATE cxx_std_17)
