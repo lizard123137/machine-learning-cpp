@@ -19,7 +19,7 @@ private:
     std::function<double(double)> activation;
 
 public:
-    Perceptron(std::function<double(double)> activation, unsigned int input_size, double bias = 0.0, double learning_rate = 1.0);
+    Perceptron(std::function<double(double)> activation, unsigned int input_size, double bias = 0.0, double learning_rate = 0.01);
 
     void updateBias(const double value);
     void train(Eigen::MatrixXd inputs, Eigen::VectorXd expected);
@@ -35,6 +35,7 @@ Perceptron::Perceptron(std::function<double(double)> activation, unsigned int in
 
     // Start with random weights
     this->weights = Eigen::VectorXd::Random(this->input_size);
+    std::cout << "Starting weights:\n" << this->weights << std::endl;
 }
 
 
@@ -47,10 +48,16 @@ void Perceptron::train(Eigen::MatrixXd inputs, Eigen::VectorXd expected) {
     
     for(unsigned int i = 0; i < expected.size(); i++) {
         loss += this->partialLoss(inputs.row(i), expected[i]);
+
+        // Train using gradient descent
+        double prediction = this->predict(inputs.row(i));
+        for(unsigned int j = 0; j < this->input_size; j++) {
+            this->weights[j] += this->learning_rate * (expected[i] - prediction) * inputs.row(i)[j];
+        }
     }
     loss /= expected.size();
 
-    std::cout << "Total loss is: " << loss << std::endl;
+    std::cout << "Weights after training are:\n" << this->weights << std::endl;
 }
 
 double Perceptron::predict(Eigen::VectorXd inputs) {
