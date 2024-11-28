@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
+#include "neural_layer.hpp"
+#include "serializer.hpp"
 #include "perceptron.hpp"
 
 double relu(double val) {
@@ -13,7 +15,7 @@ int main() {
     auto window = sf::RenderWindow({600u, 400u}, "CMake SFML");
     window.setFramerateLimit(144);
 
-    // Teach perceptron to add two numbers
+    // Teach network to add two numbers
     Eigen::MatrixXd inputs(100, 2);
     Eigen::VectorXd results(100);
 
@@ -33,8 +35,9 @@ int main() {
     Perceptron p(relu, 2); 
     std::cout << "Prediction before training is: " << p.predict(final_test) << std::endl;
     p.train(inputs, results);
-
     std::cout << "Prediction after training is: " << p.predict(final_test) << std::endl;
+
+    std::cout << Serializer::SerializePerceptronJSON(p);
 
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {

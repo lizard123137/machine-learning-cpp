@@ -17,6 +17,9 @@ FetchContent_MakeAvailable(SFML)
 add_executable(main 
     src/main.cpp
     src/perceptron.hpp
+    src/neural_layer.hpp
+    src/neural_network.hpp
+    src/serializer.hpp
 )
 
 target_link_libraries(main PRIVATE

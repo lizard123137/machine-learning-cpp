@@ -7,6 +7,8 @@
 #include <functional>
 #include <vector>
 
+class Serializer; // Forward declaration
+
 class Perceptron {
 private:
     int input_size;
@@ -24,8 +26,10 @@ public:
     void updateBias(const double value);
     void train(Eigen::MatrixXd inputs, Eigen::VectorXd expected);
 
-    double predict(Eigen::VectorXd inputs);
+    double predict(Eigen::VectorXd inputs) const;
     double partialLoss(Eigen::VectorXd inputs, double expected);
+
+    friend class Serializer;
 };
 
 Perceptron::Perceptron(std::function<double(double)> activation, unsigned int input_size, double bias, double learning_rate) {
@@ -35,7 +39,6 @@ Perceptron::Perceptron(std::function<double(double)> activation, unsigned int in
 
     // Start with random weights
     this->weights = Eigen::VectorXd::Random(this->input_size);
-    std::cout << "Starting weights:\n" << this->weights << std::endl;
 }
 
 
@@ -56,11 +59,9 @@ void Perceptron::train(Eigen::MatrixXd inputs, Eigen::VectorXd expected) {
         }
     }
     loss /= expected.size();
-
-    std::cout << "Weights after training are:\n" << this->weights << std::endl;
 }
 
-double Perceptron::predict(Eigen::VectorXd inputs) {
+double Perceptron::predict(Eigen::VectorXd inputs) const {
     return this->activation(inputs.dot(this->weights) + this->bias);
 }
 
